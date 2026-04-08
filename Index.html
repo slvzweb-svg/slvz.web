@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recrutamento Staff | Brasil Rios Roleplay</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* === PALETA DE CORES BASEADA NO AVATAR (JESTER) === */
+        :root {
+            --bg-main: #050505; /* Preto profundo do fundo */
+            --bg-card: #111111; /* Cinza muito escuro do terno */
+            --bg-input: #1a1a1a;
+            --red-accent: #9e0000; /* Vermelho carmesim escuro */
+            --red-light: #ff1a1a; /* Vermelho vivo (lábios/chapéu) */
+            --gold-accent: #d4af37; /* Dourado dos guizos/olhos */
+            --white: #f5f5f5; /* Branco da pele do rosto */
+            --text-dim: #999999;
+            --border-color: #2a2a2a;
+        }
+
+        /* === RESET E BASES === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* === TOP BAR & LOGIN BUTTON === */
+        .top-bar {
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: flex-end;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .btn-top-login {
+            background: transparent;
+            border: 1px solid var(--red-accent);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .btn-top-login i {
+            color: var(--red-light);
+        }
+
+        .btn-top-login:hover {
+            background: var(--red-accent);
+            box-shadow: 0 0 15px rgba(158, 0, 0, 0.6);
+            transform: translateY(-2px);
+            border-color: var(--red-light);
+        }
+
+        .btn-top-login:hover i {
+            color: var(--white);
+        }
+
+        /* === BANNER === */
+        .banner {
+            width: 100%;
+            height: 350px;
+            background-color: var(--bg-card);
+            background-image: url('https://parallel-lime-m6ureq9zn0.edgeone.app/IMG_20260408_095503.png'); 
+            background-size: cover;
+            background-position: center;
+            border-bottom: 3px solid var(--red-accent);
+            position: relative;
+        }
+
+        .banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(to top, var(--bg-main), transparent);
+        }
+
+        /* === CONTAINER PRINCIPAL === */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: -80px;
+            position: relative;
+            z-index: 5;
+            padding: 0 20px;
+        }
+
+        /* === HEADER TEXT === */
+        .intro-section {
+            background: var(--bg-card);
+            padding: 40px 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--gold-accent);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        .intro-section h1 {
+            color: var(--white);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .intro-section h3 {
+            color: var(--red-light);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .intro-section h3 i {
+            color: var(--gold-accent);
+        }
+
+        .intro-section p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* === FORMULÁRIO E SEÇÕES === */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            animation: slideUp 1s ease forwards;
+            opacity: 0;
+        }
+
+        .form-section {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 3px solid var(--red-accent);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .form-section:hover {
+            transform: translateY(-2px);
+            border-left-color: var(--gold-accent);
+        }
+
+        .form-section h2 {
+            font-size: 1.2rem;
+            color: var(--white);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-section h2 i {
+            color: var(--red-light);
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--white);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--red-accent);
+            box-shadow: 0 0 10px rgba(158, 0, 0, 0.3);
+            background: #222;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* === RADIO BUTTONS === */
+        .radio-group {
+            display: flex;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--white);
+        }
+
+        .radio-label input[type="radio"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            background: var(--bg-input);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .radio-label input[type="radio"]:checked {
+            border-color: var(--red-light);
+        }
+
+        .radio-label input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: var(--red-light);
+            border-radius: 50%;
+        }
+
+        #exp-details-container {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* === AGRADECIMENTO & BOTÃO SUBMIT === */
+        .outro-section {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--red-accent);
+            border: 1px solid var(--red-light);
+            border-radius: 4px;
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background: var(--red-light);
+            box-shadow: 0 5px 20px rgba(255, 26, 26, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            background: var(--border-color);
+            border-color: var(--border-color);
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* === MODAL DE LOGIN DASHBOARD === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 8px;
+            border-top: 4px solid var(--gold-accent);
+            box-shadow: 0 20px 50px rgba(0,0,0,1);
+            position: relative;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--red-light);
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-content h2 i {
+            color: var(--gold-accent);
+        }
+
+        /* === TOAST POPUP === */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border-left: 4px solid var(--red-accent);
+            color: var(--white);
+            padding: 15px 25px;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-weight: 500;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--red-light);
+        }
+
+        .toast.success {
+            border-left-color: var(--gold-accent);
+        }
+
+        /* === FOOTER === */
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            color: #555;
+            font-size: 0.8rem;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* === ANIMAÇÕES === */
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .banner { height: 250px; }
+            .container { margin-top: -50px; }
+            .form-section { padding: 20px; }
+            .radio-group { flex-direction: column; gap: 15px; }
+            .top-bar { justify-content: center; background: rgba(5, 5, 5, 0.9); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <button class="btn-top-login" id="openLoginModal">
+            <i class="fa-solid fa-lock"></i> Admin Panel
+        </button>
+    </div>
+
+    <div class="banner"></div>
+
+    <div class="container">
+        <div class="intro-section">
+            <h1>Recrutamento Oficial<br>Staff Brasil Rios Roleplay</h1>
+            <h3>Admin Lider Jester <i class="fa-solid fa-mask"></i></h3>
+            <p>Bem-vindo ao formulário da Staff da Brasil Rios.<br>
+            Preencha tudo com atenção. Respostas mal feitas ou informações falsas resultarão em reprovação.<br>
+            <strong style="color: var(--white);">Confira seu @ do Discord antes de enviar.</strong></p>
+        </div>
+
+        <form id="recrutamentoForm">
+            <div class="form-section">
+                <h2><i class="fa-solid fa-address-card"></i> DADOS PESSOAIS</h2>
+                <div class="form-group">
+                    <label>Nome completo</label>
+                    <input type="text" id="nome" required placeholder="Seu nome real">
+                </div>
+                <div class="form-group">
+                    <label>Idade</label>
+                    <input type="number" id="idade" required min="10" max="99" placeholder="Sua idade">
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <input type="text" id="estado" required placeholder="Ex: SP, RJ, MG...">
+                </div>
+                <div class="form-group">
+                    <label>@ do Discord (não erre)</label>
+                    <input type="text" id="discord" required placeholder="usuario#0000 ou apenas usuario">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fa-solid fa-gamepad"></i> EXPERIÊNCIA</h2>
+                <div class="form-group">
+                    <label>Já teve experiência como staff?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="exp" value="sim" id="exp-sim" required> Sim
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="exp" value="nao" id="exp-nao"> Não
+                        </label>
+                    </div>
+                </div>
+                <div id="exp-details-container" class="form-group">
+                    <label>Explique brevemente como foi sua experiência</label>
+                    <textarea id="exp-texto" placeholder="Onde foi staff? O que fazia?"></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fa-solid fa-scale-balanced"></i> CONHECIMENTO (FILTRAGEM FORTE)</h2>
+                <div class="form-group">
+                    <label>Cite 5 regras de RP</label>
+                    <textarea id="regras" required placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ...&#10;5. ..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>O que é VDM?</label>
+                    <input type="text" id="vdm" required placeholder="Sua resposta...">
+                </div>
+                <div class="form-group">
+                    <label>O que é RDM?</label>
+                    <input type="text" id="rdm" required placeholder="Sua resposta...">
+                </div>
+                <div class="form-group">
+                    <label>O que é MG?</label>
+                    <input type="text" id="mg" required placeholder="Sua resposta...">
+                </div>
+                <div class="form-group">
+                    <label>O que é PG?</label>
+                    <input type="text" id="pg" required placeholder="Sua resposta...">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fa-solid fa-bullseye"></i> COMPROMISSO</h2>
+                <div class="form-group">
+                    <label>Por que você quer entrar na staff?</label>
+                    <textarea id="motivo" required placeholder="Sua motivação..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Qual seu horário disponível?</label>
+                    <input type="text" id="horario" required placeholder="Ex: Todos os dias, das 14h às 22h">
+                </div>
+                <div class="form-group">
+                    <label>Você consegue cumprir seu turno diariamente?</label>
+                    <input type="text" id="turno" required placeholder="Responda com sinceridade">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fa-solid fa-shield-halved"></i> RESPONSABILIDADE FINAL</h2>
+                <div class="form-group">
+                    <label>Você concorda em seguir todas as regras da staff?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="aceitaRegras" value="sim" required> Sim
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="aceitaRegras" value="nao"> Não
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>De 0 a 10, quanto você se considera preparado para ser staff? E por quê?</label>
+                    <textarea id="preparo" required placeholder="Nota e justificativa..."></textarea>
+                </div>
+            </div>
+
+            <div class="outro-section">
+                <p>Obrigado pelo interesse em fazer parte da equipe!<br>
+                <strong style="color: var(--white);">Fique de olho no Discord. Caso seja aprovado, seu @ será marcado lá. Aguarde o contato!</strong></p>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                Enviar Candidatura <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <footer>
+        &copy; 2026 Brasil Rios Roleplay - Admin Jester. Todos os direitos reservados.
+    </footer>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <h2><i class="fa-solid fa-user-tie"></i> Login Staff</h2>
+            <form id="adminLoginForm" style="opacity: 1; animation: none; gap: 15px;">
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="adminEmail" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="adminSenha" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-submit" id="btnLoginSubmit" style="margin-top: 10px;">
+                    Acessar Dashboard <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // ==========================================
+        // ⚠️ COLOQUE SUAS CREDENCIAIS DO FIREBASE AQUI
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAwVQFewEN1mQDe0pnIEVU_H98l5JCeciI",
+            authDomain: "site-f55e1.firebaseapp.com",
+            projectId: "site-f55e1",
+            storageBucket: "site-f55e1.firebasestorage.app",
+            messagingSenderId: "800441189890",
+            appId: "1:800441189890:web:27f8911aa47964665f091b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // UI Lógica - Experiência
+        const expSim = document.getElementById('exp-sim');
+        const expNao = document.getElementById('exp-nao');
+        const expDetails = document.getElementById('exp-details-container');
+        const expTexto = document.getElementById('exp-texto');
+
+        expSim.addEventListener('change', () => {
+            if(expSim.checked) {
+                expDetails.style.display = 'block';
+                expTexto.setAttribute('required', 'true');
+            }
+        });
+
+        expNao.addEventListener('change', () => {
+            if(expNao.checked) {
+                expDetails.style.display = 'none';
+                expTexto.removeAttribute('required');
+                expTexto.value = '';
+            }
+        });
+
+        // UI Lógica - Modal de Login
+        const modal = document.getElementById('loginModal');
+        const btnOpenModal = document.getElementById('openLoginModal');
+        const btnCloseModal = document.getElementById('closeModal');
+
+        btnOpenModal.addEventListener('click', () => modal.classList.add('active'));
+        btnCloseModal.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) modal.classList.remove('active');
+        });
+
+        // Sistema de Toast com FontAwesome Icons
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = type === 'success' 
+                ? '<i class="fa-solid fa-circle-check" style="color: var(--gold-accent);"></i>' 
+                : '<i class="fa-solid fa-circle-xmark" style="color: var(--red-light);"></i>';
+            
+            toast.innerHTML = `<span style="font-size: 1.5rem;">${icon}</span> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        // ==========================================
+        // LÓGICA DE ENVIO DO FORMULÁRIO (FIRESTORE)
+        // ==========================================
+        const formRecrutamento = document.getElementById('recrutamentoForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        formRecrutamento.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            btnSubmit.innerHTML = 'ENVIANDO... <i class="fa-solid fa-spinner fa-spin"></i>';
+            btnSubmit.disabled = true;
+
+            const temExperiencia = document.querySelector('input[name="exp"]:checked').value;
+            const aceitaRegras = document.querySelector('input[name="aceitaRegras"]:checked').value;
+
+            const dadosCandidato = {
+                nome: document.getElementById('nome').value,
+                idade: document.getElementById('idade').value,
+                estado: document.getElementById('estado').value,
+                discord: document.getElementById('discord').value,
+                experiencia: temExperiencia,
+                experienciaDetalhes: expTexto.value,
+                conhecimento: {
+                    regras: document.getElementById('regras').value,
+                    vdm: document.getElementById('vdm').value,
+                    rdm: document.getElementById('rdm').value,
+                    mg: document.getElementById('mg').value,
+                    pg: document.getElementById('pg').value
+                },
+                compromisso: {
+                    motivo: document.getElementById('motivo').value,
+                    horario: document.getElementById('horario').value,
+                    turnoDiario: document.getElementById('turno').value
+                },
+                aceitaRegras: aceitaRegras,
+                preparoEJustificativa: document.getElementById('preparo').value,
+                dataEnvio: serverTimestamp(),
+                status: 'Pendente'
+            };
+
+            try {
+                await addDoc(collection(db, "formularios_staff"), dadosCandidato);
+                
+                showToast('Candidatura enviada com sucesso! Fique atento ao Discord.', 'success');
+                formRecrutamento.reset();
+                expDetails.style.display = 'none';
+            } catch (error) {
+                console.error("Erro no Firebase:", error);
+                showToast('Erro ao enviar. Verifique o console ou tente novamente.', 'error');
+            } finally {
+                btnSubmit.innerHTML = 'Enviar Candidatura <i class="fa-solid fa-paper-plane"></i>';
+                btnSubmit.disabled = false;
+            }
+        });
+
+        // ==========================================
+        // LÓGICA DE LOGIN ADMIN (FIREBASE AUTH)
+        // ==========================================
+        const formLogin = document.getElementById('adminLoginForm');
+        const btnLoginSubmit = document.getElementById('btnLoginSubmit');
+
+        formLogin.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const senha = document.getElementById('adminSenha').value;
+
+            btnLoginSubmit.innerHTML = 'Autenticando... <i class="fa-solid fa-spinner fa-spin"></i>';
+            btnLoginSubmit.disabled = true;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, senha);
+                showToast('Acesso liberado! Redirecionando...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'home.html'; 
+                }, 1500);
+
+            } catch (error) {
+                console.error("Erro Auth:", error.code);
+                let msgErro = "Erro ao fazer login.";
+                if(error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                    msgErro = "E-mail ou senha incorretos!";
+                }
+                showToast(msgErro, 'error');
+                btnLoginSubmit.innerHTML = 'Acessar Dashboard <i class="fa-solid fa-arrow-right-to-bracket"></i>';
+                btnLoginSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
