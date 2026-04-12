@@ -389,6 +389,19 @@
             border: 1px solid rgba(255,255,255,0.05); color: #ddd; font-style: italic;
         }
 
+        .data-answer a {
+            color: var(--gold-accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+        .data-answer a:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+
         /* Modal Confirmação */
         .modal-confirm {
             background: var(--bg-card); width: 100%; max-width: 450px;
@@ -629,6 +642,11 @@
             const conn = appData.conhecimento || {};
             const comp = appData.compromisso || {};
             
+            // Tratamento para exibir link do vídeo ou aviso caso não exista (fichas antigas)
+            const videoHtml = appData.videoIdentidade 
+                ? `<a href="${appData.videoIdentidade}" target="_blank"><i class="fa-solid fa-link"></i> Abrir Vídeo de Apresentação</a>` 
+                : 'Não enviado / Ficha Antiga';
+
             modalBody.innerHTML = `
                 <div class="data-group">
                     <h3><i class="fa-solid fa-address-card"></i> 1. Identidade</h3>
@@ -664,6 +682,11 @@
                     <h3><i class="fa-solid fa-gavel"></i> 5. Veredito Final</h3>
                     <div class="data-row"><strong>Aceita punir conforme tabela?</strong> ${appData.aceitaRegras === 'sim' ? '<span style="color:#4CAF50">Sim</span>' : '<span style="color:#F44336">Não</span>'}</div>
                     <div class="data-row"><strong>Nota de Preparo e Justificativa:</strong><div class="data-answer">${appData.preparoEJustificativa || ''}</div></div>
+                </div>
+
+                <div class="data-group">
+                    <h3><i class="fa-solid fa-video"></i> 6. Verificação de Identidade</h3>
+                    <div class="data-row"><strong>Link do Vídeo:</strong><div class="data-answer">${videoHtml}</div></div>
                 </div>
             `;
             
