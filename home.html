@@ -389,17 +389,40 @@
             border: 1px solid rgba(255,255,255,0.05); color: #ddd; font-style: italic;
         }
 
-        .data-answer a {
-            color: var(--gold-accent);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s ease;
+        /* Video / Link Estilo Dashboard */
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
         }
-        .data-answer a:hover {
-            color: var(--white);
-            text-decoration: underline;
+
+        .video-container iframe, .video-container video {
+            width: 100%; height: 100%; border: none;
+        }
+
+        .btn-drive-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #1e1e1e;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid #333;
+            transition: all 0.3s;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .btn-drive-link:hover {
+            background: var(--gold-accent);
+            color: #000;
+            box-shadow: 0 0 15px var(--gold-glow);
         }
 
         /* Modal Confirmação */
@@ -442,7 +465,7 @@
             .dashboard-controls { flex-direction: column; align-items: stretch; }
             .search-box { max-width: 100%; }
             header { padding: 15px 20px; }
-            .header-title span { display: none; } /* Oculta texto no mobile para caber botão */
+            .header-title span { display: none; }
         }
     </style>
 </head>
@@ -486,8 +509,7 @@
                 <h2><i class="fa-solid fa-clipboard-user"></i> Ficha do Candidato</h2>
                 <button class="close-modal" onclick="closeReadModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="modal-body" id="modalBodyContent">
-                </div>
+            <div class="modal-body" id="modalBodyContent"></div>
         </div>
     </div>
 
@@ -531,7 +553,6 @@
         let allApplications = []; 
         let deleteIdTarget = null; 
 
-        // === SISTEMA DE TOAST ===
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -543,14 +564,12 @@
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
         }
 
-        // === CÓPIA DE DISCORD ===
         window.copyDiscord = function(discordTag) {
             navigator.clipboard.writeText(discordTag).then(() => {
                 showToast(`Discord ${discordTag} copiado!`, 'success');
             });
         }
 
-        // === PROTEÇÃO AUTH ===
         onAuthStateChanged(auth, (user) => {
             if (!user) window.location.href = 'index.html';
         });
@@ -558,7 +577,31 @@
             signOut(auth).then(() => window.location.href = 'index.html');
         });
 
-        // === RENDERIZAR CARDS ===
+        // Lógica de Renderização do Vídeo ou Link
+        function renderMedia(url) {
+            if(!url) return '<p style="color: var(--red-light);">Nenhum vídeo enviado.</p>';
+            
+            // Verifica YouTube
+            const youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+            if(youtubeMatch) {
+                return `<div class="video-container"><iframe src="https://www.youtube.com/embed/${youtubeMatch}" allowfullscreen></iframe></div>`;
+            }
+
+            // Verifica Extensão direta (mp4, webm, etc)
+            if(url.match(/\.(mp4|webm|ogg)$/i)) {
+                return `<div class="video-container"><video src="${url}" controls></video></div>`;
+            }
+
+            // Caso seja Drive ou Link Genérico
+            const isDrive = url.includes('drive.google.com');
+            return `
+                <a href="${url}" target="_blank" class="btn-drive-link">
+                    <i class="${isDrive ? 'fa-brands fa-google-drive' : 'fa-solid fa-link'}"></i> 
+                    ${isDrive ? 'Assistir no Google Drive' : 'Abrir Link Externo'}
+                </a>
+            `;
+        }
+
         function renderCards(dataArray) {
             cardsContainer.innerHTML = '';
             totalCount.innerText = dataArray.length;
@@ -605,7 +648,6 @@
             });
         }
 
-        // === BUSCA REALTIME (FIRESTORE) ===
         const q = query(collection(db, "formularios_staff"), orderBy("dataEnvio", "desc"));
         onSnapshot(q, (snapshot) => {
             loadingText.style.display = 'none';
@@ -621,7 +663,6 @@
             showToast("Erro ao carregar banco de dados.", "error");
         });
 
-        // === FILTRO DE PESQUISA (LOCAL) ===
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             const filtered = allApplications.filter(app => 
@@ -631,23 +672,20 @@
             renderCards(filtered);
         });
 
-        // === SISTEMA DO MODAL DE LEITURA ===
         window.openReadModal = function(id) {
             const appData = allApplications.find(app => app.id === id);
             if(!appData) return;
 
             const modalBody = document.getElementById('modalBodyContent');
-            
-            // Tratamento contra undefined caso o usuário não preencha algo
             const conn = appData.conhecimento || {};
             const comp = appData.compromisso || {};
             
-            // Tratamento para exibir link do vídeo ou aviso caso não exista (fichas antigas)
-            const videoHtml = appData.videoIdentidade 
-                ? `<a href="${appData.videoIdentidade}" target="_blank"><i class="fa-solid fa-link"></i> Abrir Vídeo de Apresentação</a>` 
-                : 'Não enviado / Ficha Antiga';
-
             modalBody.innerHTML = `
+                <div class="data-group">
+                    <h3><i class="fa-solid fa-video"></i> Verificação de Vídeo</h3>
+                    ${renderMedia(appData.videoIdentidade)}
+                </div>
+
                 <div class="data-group">
                     <h3><i class="fa-solid fa-address-card"></i> 1. Identidade</h3>
                     <div class="data-row"><strong>Nome Completo:</strong> ${appData.nome}</div>
@@ -683,11 +721,6 @@
                     <div class="data-row"><strong>Aceita punir conforme tabela?</strong> ${appData.aceitaRegras === 'sim' ? '<span style="color:#4CAF50">Sim</span>' : '<span style="color:#F44336">Não</span>'}</div>
                     <div class="data-row"><strong>Nota de Preparo e Justificativa:</strong><div class="data-answer">${appData.preparoEJustificativa || ''}</div></div>
                 </div>
-
-                <div class="data-group">
-                    <h3><i class="fa-solid fa-video"></i> 6. Verificação de Identidade</h3>
-                    <div class="data-row"><strong>Link do Vídeo:</strong><div class="data-answer">${videoHtml}</div></div>
-                </div>
             `;
             
             document.getElementById('readModalOverlay').classList.add('active');
@@ -697,7 +730,6 @@
             document.getElementById('readModalOverlay').classList.remove('active');
         }
 
-        // === SISTEMA DE EXCLUSÃO ===
         window.triggerDelete = function(id) {
             deleteIdTarget = id;
             document.getElementById('deleteModalOverlay').classList.add('active');
@@ -711,7 +743,6 @@
         document.getElementById('btnConfirmDelete').addEventListener('click', async () => {
             if(!deleteIdTarget) return;
             const btn = document.getElementById('btnConfirmDelete');
-            const originalHTML = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Incinerando...';
             btn.disabled = true;
 
@@ -723,12 +754,11 @@
                 console.error(error);
                 showToast("Erro ao excluir.", "error");
             } finally {
-                btn.innerHTML = originalHTML;
+                btn.innerHTML = '<i class="fa-solid fa-trash"></i> Sim, Excluir';
                 btn.disabled = false;
             }
         });
 
-        // Fechar click fora
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => {
                 if(e.target === overlay) overlay.classList.remove('active');
