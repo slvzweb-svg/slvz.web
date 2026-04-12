@@ -1,4 +1,4 @@
-p<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -114,6 +114,39 @@ p<!DOCTYPE html>
             position: relative;
             z-index: 5;
             padding: 0 20px;
+        }
+
+        /* === ALERTA NOVIDADES (BANNER FIXO) === */
+        .alert-banner {
+            background: rgba(158, 0, 0, 0.1);
+            border: 1px solid var(--red-accent);
+            border-left: 5px solid var(--red-light);
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .alert-banner i {
+            color: var(--red-light);
+            font-size: 1.8rem;
+            animation: pulseWarning 2s infinite;
+        }
+
+        .alert-banner .alert-text strong {
+            color: var(--white);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .alert-banner .alert-text p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin: 0;
         }
 
         /* === HEADER TEXT === */
@@ -333,7 +366,7 @@ p<!DOCTYPE html>
             box-shadow: none;
         }
 
-        /* === MODAL DE LOGIN DASHBOARD === */
+        /* === MODALS (LOGIN E AVISO) === */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -465,12 +498,19 @@ p<!DOCTYPE html>
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes pulseWarning {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         @media (max-width: 600px) {
             .banner { height: 250px; }
             .container { margin-top: -50px; }
             .form-section { padding: 20px; }
             .radio-group { flex-direction: column; gap: 15px; }
             .top-bar { justify-content: center; background: rgba(5, 5, 5, 0.9); }
+            .alert-banner { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -485,6 +525,15 @@ p<!DOCTYPE html>
     <div class="banner"></div>
 
     <div class="container">
+        
+        <div class="alert-banner">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div class="alert-text">
+                <strong>ATENÇÃO: REGRAS ATUALIZADAS!</strong>
+                <p>O painel de regras do servidor foi atualizado recentemente. É obrigatório estudar as novidades antes da sua entrevista.</p>
+            </div>
+        </div>
+
         <div class="intro-section">
             <h1>Recrutamento Oficial<br>Staff Brasil Rios Roleplay</h1>
             <h3>Admin Lider Jester <i class="fa-solid fa-mask"></i></h3>
@@ -540,20 +589,20 @@ p<!DOCTYPE html>
                     <textarea id="regras" required placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ...&#10;5. ..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>O que é VDM?</label>
-                    <input type="text" id="vdm" required placeholder="Sua resposta...">
+                    <label>O que é ATI?</label>
+                    <input type="text" id="ati" required placeholder="Sua resposta...">
                 </div>
                 <div class="form-group">
-                    <label>O que é RDM?</label>
-                    <input type="text" id="rdm" required placeholder="Sua resposta...">
+                    <label>O que é ESM?</label>
+                    <input type="text" id="esm" required placeholder="Sua resposta...">
                 </div>
                 <div class="form-group">
-                    <label>O que é MG?</label>
-                    <input type="text" id="mg" required placeholder="Sua resposta...">
+                    <label>O que é IER?</label>
+                    <input type="text" id="ier" required placeholder="Sua resposta...">
                 </div>
                 <div class="form-group">
-                    <label>O que é PG?</label>
-                    <input type="text" id="pg" required placeholder="Sua resposta...">
+                    <label>O que é DV?</label>
+                    <input type="text" id="dv" required placeholder="Sua resposta...">
                 </div>
             </div>
 
@@ -607,13 +656,25 @@ p<!DOCTYPE html>
         &copy; 2026 Brasil Rios Roleplay - Admin Jester. Todos os direitos reservados.
     </footer>
 
+    <div class="modal-overlay" id="avisoModal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="close-modal" id="closeAvisoModal">&times;</button>
+            <i class="fa-solid fa-book-skull" style="font-size: 3rem; color: var(--red-light); margin-bottom: 15px;"></i>
+            <h2 style="color: var(--white); font-size: 1.3rem;">LEIA ANTES DE PREENCHER!</h2>
+            <p style="color: var(--text-dim); margin-bottom: 25px; font-size: 0.95rem;">
+                As <strong>regras do jogo foram atualizadas</strong> no nosso painel. É obrigatório que todos os candidatos estudem e conheçam as novas regras e diretrizes antes de passarem pela etapa da entrevista.
+            </p>
+            <button class="btn-submit" id="btnEntendiAviso" style="padding: 12px; font-size: 1rem;">Ciente, eu vou estudar!</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="loginModal">
         <div class="modal-content">
             <button class="close-modal" id="closeModal">&times;</button>
             <h2><i class="fa-solid fa-user-tie"></i> Login Staff</h2>
             <form id="adminLoginForm" style="opacity: 1; animation: none; gap: 15px;">
                 <div class="form-group">
-                    <label>E-mail</label>
+                <label>E-mail</label>
                     <input type="email" id="adminEmail" required placeholder="seu@email.com">
                 </div>
                 <div class="form-group">
@@ -634,9 +695,6 @@ p<!DOCTYPE html>
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // ==========================================
-        // ⚠️ COLOQUE SUAS CREDENCIAIS DO FIREBASE AQUI
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyAwVQFewEN1mQDe0pnIEVU_H98l5JCeciI",
             authDomain: "site-f55e1.firebaseapp.com",
@@ -649,6 +707,26 @@ p<!DOCTYPE html>
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+
+        // ==========================================
+        // LÓGICA DO MODAL DE AVISO AUTOMÁTICO
+        // ==========================================
+        const avisoModal = document.getElementById('avisoModal');
+        const closeAvisoModal = document.getElementById('closeAvisoModal');
+        const btnEntendiAviso = document.getElementById('btnEntendiAviso');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Abre o aviso automaticamente assim que a página carrega
+            setTimeout(() => {
+                avisoModal.classList.add('active');
+            }, 500); // pequeno delay para transição suave
+        });
+
+        closeAvisoModal.addEventListener('click', () => avisoModal.classList.remove('active'));
+        btnEntendiAviso.addEventListener('click', () => avisoModal.classList.remove('active'));
+        avisoModal.addEventListener('click', (e) => {
+            if(e.target === avisoModal) avisoModal.classList.remove('active');
+        });
 
         // UI Lógica - Experiência
         const expSim = document.getElementById('exp-sim');
@@ -726,10 +804,10 @@ p<!DOCTYPE html>
                 experienciaDetalhes: expTexto.value,
                 conhecimento: {
                     regras: document.getElementById('regras').value,
-                    vdm: document.getElementById('vdm').value,
-                    rdm: document.getElementById('rdm').value,
-                    mg: document.getElementById('mg').value,
-                    pg: document.getElementById('pg').value
+                    ati: document.getElementById('ati').value, // Siglas alteradas no payload
+                    esm: document.getElementById('esm').value,
+                    ier: document.getElementById('ier').value,
+                    dv: document.getElementById('dv').value
                 },
                 compromisso: {
                     motivo: document.getElementById('motivo').value,
