@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -204,7 +204,6 @@
             overflow: hidden;
         }
 
-        /* Efeito de borda esquerda neon */
         .form-section::before {
             content: '';
             position: absolute;
@@ -221,12 +220,12 @@
             box-shadow: 0 0 15px var(--gold-accent);
         }
 
-        /* Animação em cascata (Staggered) */
         .form-section:nth-child(1) { animation-delay: 0.1s; }
         .form-section:nth-child(2) { animation-delay: 0.2s; }
         .form-section:nth-child(3) { animation-delay: 0.3s; }
         .form-section:nth-child(4) { animation-delay: 0.4s; }
         .form-section:nth-child(5) { animation-delay: 0.5s; }
+        .form-section:nth-child(6) { animation-delay: 0.6s; }
 
         .form-section h2 {
             font-size: 1.3rem;
@@ -254,10 +253,38 @@
             font-size: 0.95rem;
         }
 
+        .label-with-help {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-help {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--gold-accent);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-help:hover {
+            background: var(--gold-accent);
+            color: var(--bg-main);
+            box-shadow: 0 0 8px var(--gold-glow);
+        }
+
         input[type="text"],
         input[type="number"],
         input[type="password"],
         input[type="email"],
+        input[type="url"],
         textarea {
             width: 100%;
             padding: 16px;
@@ -280,7 +307,6 @@
 
         textarea { resize: vertical; min-height: 120px; }
 
-        /* Contador de Caracteres */
         .char-counter {
             position: absolute;
             bottom: -22px;
@@ -291,7 +317,6 @@
         }
         .char-counter.limit { color: var(--red-light); font-weight: bold; }
 
-        /* === RADIO BUTTONS === */
         .radio-group { display: flex; gap: 35px; margin-top: 10px; }
         .radio-label {
             display: flex;
@@ -331,7 +356,6 @@
 
         #exp-details-container { display: none; margin-top: 25px; animation: fadeIn 0.4s ease; }
 
-        /* === BOTÃO SUBMIT === */
         .outro-section { text-align: center; padding: 20px 0; color: var(--text-dim); }
         .btn-submit {
             width: 100%;
@@ -380,7 +404,6 @@
             box-shadow: none;
         }
 
-        /* === MODALS === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
@@ -413,7 +436,6 @@
         .modal-content h2 { text-align: center; margin-bottom: 25px; color: var(--white); gap: 10px; display:flex; justify-content:center;}
         .modal-content h2 i { color: var(--gold-accent); }
 
-        /* === TOAST === */
         .toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
         .toast {
             background: var(--bg-card);
@@ -575,6 +597,20 @@
                 </div>
             </div>
 
+            <div class="form-section">
+                <h2><i class="fa-solid fa-video"></i> 6. Verificação de Identidade</h2>
+                <div class="form-group">
+                    <div class="label-with-help">
+                        <label>Link do vídeo de apresentação (Obrigatório)</label>
+                        <button type="button" class="btn-help" id="btnHelpVideo">?</button>
+                    </div>
+                    <input type="url" id="videoLink" required placeholder="https://drive.google.com/file/d/...">
+                    <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 8px;">
+                        No vídeo você deve dizer seu <strong>Nome Completo, Idade e Estado</strong>.
+                    </p>
+                </div>
+            </div>
+
             <div class="outro-section">
                 <p>Obrigado pelo seu tempo e dedicação.<br>
                 <strong style="color: var(--white);">Aguarde a resposta no Discord. Se aprovado, nós marcaremos você!</strong></p>
@@ -589,6 +625,24 @@
     <footer>
         &copy; 2026 Brasil Rios Roleplay - Desenvolvido por Admin Jester.
     </footer>
+
+    <div class="modal-overlay" id="helpVideoModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeHelpVideo">&times;</button>
+            <h2><i class="fa-solid fa-circle-question"></i> Como enviar o vídeo?</h2>
+            <div style="color: var(--text-dim); font-size: 0.95rem; line-height: 1.6;">
+                <p>Para sua segurança e autenticidade, exigimos um vídeo curto.</p>
+                <ol style="margin: 15px 0 15px 20px;">
+                    <li>Grave um vídeo dizendo seu <strong>nome, idade e onde mora</strong>.</li>
+                    <li>Suba o vídeo no <strong>Google Drive</strong>, <strong>YouTube (Não listado)</strong> ou <strong>Imgur</strong>.</li>
+                    <li><strong>IMPORTANTE:</strong> Se usar o Drive, certifique-se de que o link está configurado como <u>"Qualquer pessoa com o link"</u>.</li>
+                    <li>Cole o link gerado no campo do formulário.</li>
+                </ol>
+                <p>Sem o link de um vídeo válido, sua ficha será automaticamente descartada.</p>
+            </div>
+            <button class="btn-submit" id="btnOkHelp" style="margin-top: 20px; padding: 12px;">Entendi!</button>
+        </div>
+    </div>
 
     <div class="modal-overlay" id="avisoModal">
         <div class="modal-content" style="text-align: center; max-width: 400px;">
@@ -647,25 +701,28 @@
         // ==========================================
         const avisoModal = document.getElementById('avisoModal');
         const loginModal = document.getElementById('loginModal');
+        const helpVideoModal = document.getElementById('helpVideoModal');
 
-        // Abre aviso automaticamente
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => avisoModal.classList.add('active'), 600);
         });
 
-        // Fechar Modals
+        // Controle de Modals
         document.getElementById('closeAvisoModal').addEventListener('click', () => avisoModal.classList.remove('active'));
         document.getElementById('btnEntendiAviso').addEventListener('click', () => avisoModal.classList.remove('active'));
         document.getElementById('openLoginModal').addEventListener('click', () => loginModal.classList.add('active'));
         document.getElementById('closeModal').addEventListener('click', () => loginModal.classList.remove('active'));
         
+        document.getElementById('btnHelpVideo').addEventListener('click', () => helpVideoModal.classList.add('active'));
+        document.getElementById('closeHelpVideo').addEventListener('click', () => helpVideoModal.classList.remove('active'));
+        document.getElementById('btnOkHelp').addEventListener('click', () => helpVideoModal.classList.remove('active'));
+
         document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if(e.target === modal) modal.classList.remove('active');
             });
         });
 
-        // Contadores de Caracteres
         const setupCounter = (inputId, countId) => {
             const input = document.getElementById(inputId);
             const count = document.getElementById(countId);
@@ -677,7 +734,6 @@
         setupCounter('motivo', 'count-motivo');
         setupCounter('preparo', 'count-preparo');
 
-        // Lógica Experiência (Mostra/Esconde campo)
         const expSim = document.getElementById('exp-sim');
         const expNao = document.getElementById('exp-nao');
         const expDetails = document.getElementById('exp-details-container');
@@ -694,7 +750,6 @@
             document.getElementById('count-exp').innerText = '0';
         });
 
-        // Toast Notification System
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -715,20 +770,24 @@
         const btnSubmit = document.getElementById('btnSubmit');
         const inputDiscord = document.getElementById('discord');
         const errDiscord = document.getElementById('err-discord');
+        const videoLink = document.getElementById('videoLink');
 
         formRecrutamento.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Validação de espaço no Discord
             if (inputDiscord.value.includes(' ')) {
                 inputDiscord.style.borderColor = 'var(--red-light)';
                 errDiscord.style.display = 'block';
                 showToast('O nome de usuário do Discord não pode conter espaços.', 'error');
                 inputDiscord.focus();
                 return;
-            } else {
-                inputDiscord.style.borderColor = 'var(--border-color)';
-                errDiscord.style.display = 'none';
+            }
+
+            // Bloqueio caso o link de vídeo esteja vazio ou inválido (HTML5 handle basic url, but let's be sure)
+            if (!videoLink.value || videoLink.value.trim() === "") {
+                showToast('O link do vídeo de apresentação é obrigatório.', 'error');
+                videoLink.focus();
+                return;
             }
 
             btnSubmit.innerHTML = 'ENVIANDO DADOS... <i class="fa-solid fa-spinner fa-spin"></i>';
@@ -758,6 +817,7 @@
                 },
                 aceitaRegras: aceitaRegras,
                 preparoEJustificativa: document.getElementById('preparo').value,
+                videoIdentidade: videoLink.value, // Novo campo
                 dataEnvio: serverTimestamp(),
                 status: 'Pendente'
             };
